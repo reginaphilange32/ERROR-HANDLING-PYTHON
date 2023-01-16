@@ -1,0 +1,38 @@
+library(syuzhet)
+setwd("D:\\NLP")
+
+get_sentiment_dictionary()
+get_nrc_values('damn')
+get_sent_values('happy')
+words = c("happy","damage","exited","sad")
+get_nrc_values(words)
+get_nrc_sentiment(words)
+
+x = readLines("nov2022.txt")
+x
+
+get_sentiment(x)
+get_nrc_sentiment(x)
+
+#get tokens
+#lines = get_sentences(x)
+
+#get words
+words = get_tokens(x)
+words
+
+get_nrc_sentiment(words)
+
+folder = "sentidata"
+
+myfiles =list.files(folder)
+myfiles
+myfiles = paste(folder,"\\",myfiles,sep="")
+myfiles
+
+x = lapply(myfiles, FUN = readLines)
+xx = lapply(x, FUN = paste, collapse="")
+xx
+
+get_nrc_sentiment(unlist(x))
+get_sentiment(unlist(x))
