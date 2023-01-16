@@ -1,0 +1,38 @@
+from nltk.stem.snowball import stopwords
+import nltk
+from nltk.translate.meteor_score import wordnet
+from nltk.corpus import wordnet
+from nltk.collocations import BigramCollocationFinder
+from nltk.metrics.association import BigramAssocMeasures
+from nltk.corpus import webtext
+nltk.download('webtext')
+nltk.download('wordnet')
+nltk.download('stopwords')
+from nltk.metrics import TrigramAssocMeasures
+
+
+text_words = [words.lower() for words in webtext.words('pirates.txt')]
+
+finder = BigramCollocationFinder.from_words(text_words)
+finder.nbest(BigramAssocMeasures.likelihood_ratio,10)
+
+# we got stopwords in bigram, so we will remove those now and search for bigrams
+
+filter_stop = lambda w:len(w) < 3 or w in set(stopwords.words('english'))
+finder.apply_word_filter(filter_stop)
+finder.apply_freq_filter(10)
+finder.nbest(BigramAssocMeasures.likelihood_ratio,15)
+
+***************************************************************************************
+
+text_words = [words.lower() for words in webtext.words('pirates.txt')]
+
+finder = nltk.TrigramCollocationFinder.from_words(text_words)
+finder.nbest(TrigramAssocMeasures.likelihood_ratio,10)
+
+# we got stopwords in bigram, so we will remove those now and search for bigrams
+
+filter_stop = lambda w:len(w) < 3 or w in set(stopwords.words('english'))
+finder.apply_word_filter(filter_stop)
+finder.apply_freq_filter(5)
+finder.nbest(TrigramAssocMeasures.likelihood_ratio,15)
