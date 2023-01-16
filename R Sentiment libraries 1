@@ -1,0 +1,30 @@
+library(stringr)
+library(SentimentAnalysis)
+library(sentimentr)
+library(meanr)
+library(RSentiment)
+library(tm)
+library(qdap)
+library(SnowballC)
+
+x = readLines(file.choose())
+x = paste(x,collapse="")
+xl = tolower(x)
+
+meanr::score(xl)
+
+#Rsentiment
+calculate_score(xl)
+calculate_sentiment(xl)
+
+#sentimentR
+sentiment(xl)
+extract_sentiment_terms(xl)
+extract_emotion_terms(xl)
+
+#SentimentAnalysis
+data("DictionaryGI")
+data("DictionaryHE")
+data("DictionaryLM")
+
+analyzeSentiment(xl)
