@@ -1,0 +1,87 @@
+import nltk
+from nltk.tokenize import sent_tokenize
+from nltk.corpus import wordnet
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+nltk.download('punkt')
+nltk.download('omw-1.4')
+nltk.download('punkt')
+
+
+synArr = wordnet.synsets('Weapon')
+
+print("Synonyms of Weapon are: ",synArr)
+
+print("Definition of word: ", synArr[0].definition())
+
+print("Hypernym of word: ",synArr[0].hypernyms())
+
+print("Hyponym of word: ",synArr[0].hyponyms())
+
+print("Defintion of bow and arrow: ", synArr[0].hyponyms()[1].definition())
+
+************************************************************************************
+
+synonyms = []
+
+synArr = wordnet.synsets('win')
+print(synArr)
+
+for syn in synArr:
+  for lem in syn.lemmas():
+    synonyms.append(lem.name)
+
+#len(psynonyms)
+
+print('synonyms of Win: ',synonyms)
+print('synonyms of Total: ',len(synonyms))
+print('Unique synonyms: ',set(synonyms))
+print('Unique synonyms total: ',len(set(synonyms)))
+
+*********************************************************************************
+
+antonyms = []
+
+for syn in synArr:
+  for lem in syn.lemmas():
+    for ant in lem.antonyms():
+      antonyms.append(ant.name)
+antonyms
+
+*********************************************************************************
+
+# we will check similarity between cake, loaf, bread
+
+# Step-1 
+
+arr1 = wordnet.synsets('cake')
+arr2 = wordnet.synsets('bread')
+arr3 = wordnet.synsets('loaf')
+
+print('Synomyns of cake: ',arr1)
+print('Synomyns of bread: ',arr2)
+print('Synomyns of loaf ',arr3)
+
+# Step-2
+
+cake = arr1[0]
+bread = arr2[0]
+loaf = arr3[1]
+loafb = arr3[0]
+
+print("cake.wup_similarity(bread): ", cake.wup_similarity(bread))
+print("cake.wup_similarity(loaf): ", cake.wup_similarity(bread))
+print("bread.wup_similarity(loaf): ", bread.wup_similarity(loaf))
+print("bread.wup_similarity(loafb): ", bread.wup_similarity(loafb))
+
+arr3[0].hypernyms()
+
+# Step-3
+
+ref=arr3[0].hypernyms()[0]
+print('reference word: ',ref)
+
+print('cake-ref: ', cake.shortest_path_distance(ref))
+print('bread-ref: ', bread.shortest_path_distance(ref))
+print('loaf-ref: ', loaf.shortest_path_distance(ref))
+print('loafb-ref: ', loafb.shortest_path_distance(ref))
