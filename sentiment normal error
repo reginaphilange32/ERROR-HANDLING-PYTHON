@@ -1,0 +1,40 @@
+import nltk
+import tqdm
+from nltk.sentiment import SentimentIntensityAnalyzer
+from tqdm.notebook import tqdm
+nltk.download('vader_lexicon')
+
+sia = SentimentIntensityAnalyzer()
+
+print(sia.polarity_scores("I am so happy having dinner at TAJ"))
+print(sia.polarity_scores("This is worst phone ever"))
+
+import pandas as pd
+
+data = pd.read_csv('/content/Reviews.csv')
+
+data.head()
+data.shape
+data['Score'].head()
+data['Score'].value_counts()
+
+
+import matplotlib.pyplot as plt
+
+data['Score'].value_counts().plot(kind='bar',title = "review by start ratings").set_xlabel("star ratings")
+
+example = data['Text'][21]
+print(example)
+print(sia.polarity_scores(example))
+
+res = {}
+
+for i,row in tqdm(data.iterrows(), total = len(data)):
+  text = row["Text"]
+  id = row["Id"]
+  res[id] = sia.polarity_scores(text)
+
+v = pd.DataFrame(res).T
+v = v.reset_index().rename(columns={'index':'Id'})
+v = v.merge(data,how='left')
+v
