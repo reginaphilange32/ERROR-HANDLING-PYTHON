@@ -1,0 +1,67 @@
+!pip install spacy
+!python -m spacy download('en_core_web_sm')
+
+import spacy
+from spacy import displacy
+from spacy import tokenizer
+import spacy
+from spacy import displacy
+from spacy import tokenizer
+
+import spacy
+from spacy import displacy
+from spacy import tokenizer
+
+
+import spacy
+from spacy import displacy
+from spacy import tokenizer
+
+
+import spacy
+from spacy import displacy
+from spacy import tokenizer
+
+
+###############################################33
+import spacy
+from spacy import displacy
+from spacy import tokenizer
+
+nlp = spacy.load('en_core_web_sm')
+text = """ India, officially the Republic of India, is a country in South Asia. It is the seventh-largest country by area, the second-most populous country, and the most populous democracy in the world. Wikipedia
+Capital: New Delhi
+Dialing code: +91
+President: Droupadi Murmu
+Population: 139.34 crores (2021) World Bank
+Gross domestic product: 3.17 lakh crores USD (2021) World Bank
+Prime minister: Narendra Modi """
+
+doc = nlp(text)
+sentence = list(doc.sents)
+for word in sentence:
+  ents = [(word.start_char,word,word.end_char,word.label)]
+  print(ents)
+
+displacy.render(doc,style='ent',jupyter=True)
+
+
+#############################################################################
+
+import nltk
+from nltk.corpus import wordnet
+from nltk.corpus import webtext
+nltk.download('wordnet')
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
+
+def getNER():
+  for sent in nltk.sent_tokenize(text):
+    for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
+      if hasattr(chunk,'label'):
+        print(chunk.label(), " ".join(c[0] for c in chunk))
+
+getNER()
