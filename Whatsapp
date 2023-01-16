@@ -1,0 +1,17 @@
+!pip install whatstk
+
+from whatstk.whatsapp.objects import WhatsAppChat
+from whatstk import WhatsAppChat
+
+chats = WhatsAppChat.from_source(filepath='/content/WhatsApp Chat with NLP MBA DSA.txt')
+
+chats
+
+group_created = chats.df.min()
+group_archived = chats.df.max()
+
+chats.df
+
+group_stats = chats.df.groupby('username').agg('count')
+
+group_stats
