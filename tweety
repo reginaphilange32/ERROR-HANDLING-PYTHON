@@ -1,0 +1,97 @@
+import tweepy
+import pandas as pd
+import numpy as np
+
+!pip install BERTopic[gensim]
+
+!pip install bertopic
+
+!pip install BERTopic
+!pip install BERTopic[Visualization]
+!pip install BERTopic[flair]
+!pip install BERTopic[spacy]
+!pip install BERTopic[use]
+
+tweeta = []
+
+access_token='1561995068537700352-GQr0HM6kAXAqG1UmkCVSuqzYC8YA7U'
+access_token_secret='NmDnYJgr8PovTsERrbYr81YoRfwwwU1X3tvO62EPCUhkK'
+consumer_key='mEQ2lkigwkARlgr4ik7SOQMMn'
+consumer_token_secret='ZATkNzWKX6Uy9av1i11Bq7xYf96SmCmBNudaRW8UJsKIZVEIsM'
+
+user = []
+txt=[]
+
+auth = tweepy.OAuthHandler(consumer_key,consumer_secret)
+auth.set_access_token(access_token,access_token_secret)
+
+api = tweepy.API(auth)
+tweets=tweepy.Cursor(api.search,q='#AajTakExactPoll',Model='extended').items(100)
+
+for tweet in tweets:
+  user.append(tweet.user.screen_name)
+  txt.append(tweet.text)
+
+df1={'User':user,'Text':txt}
+df=pd.DataFrame(data=df1)
+df
+
+
+
+import re
+import string
+
+def clean_text(tweet):
+    tweet = tweet.lower()
+    tweet = re.sub('@[^\s]+', '', tweet) 
+    tweet = re.sub('\[.*?\]', '', tweet) 
+    tweet = re.sub('((www\.[^\s]+)|(https?://[^\s]+))', '', tweet)
+    tweet = re.sub('[%s]' % re.escape(string.punctuation), '', tweet)
+    tweet = re.sub('\w*\d\w*', '', tweet) 
+    tweet = re.sub('[‘’“”…]', '', tweet)
+    tweet = re.sub('\n', '', tweet)
+    return tweet
+
+    
+tweet = lambda x: clean_text(x)
+
+data_clean = pd.DataFrame(df.Text.apply(tweet))
+data_clean['Id'] = np.arange(1, 0 + len(data_clean) + 1)
+data_clean
+
+from bertopic import BERTopic
+df
+model = BERTopic(verbose=True)
+docs = data_clean.Text.to_list()
+topic,probablities = model.fit_transform(docs)
+
+
+model.get_topic_freq().head()
+
+model.get_topic(0)
+
+model.visualize_barchart()
+
+import nltk
+import tqdm
+from nltk.sentiment import SentimentIntensityAnalyzer
+from tqdm.notebook import tqdm
+nltk.download('vader_lexicon')
+
+sentiment=SentimentIntensityAnalyzer()
+
+res={}
+x=1
+for i, row in tqdm(data_clean.iterrows(),total=len(data_clean)):
+  text=row['Text']
+  id=x
+  res[id]=sentiment.polarity_scores(text)
+  x=x+1
+v=pd.DataFrame(res).T
+v=v.reset_index().rename(columns={'index':'Id'})
+v=v.merge(data_clean,how='left')
+v['label']=v['compound'].apply(lambda x: 'Positive' if x>=0.05 else 'Negative' if x<=-0.05 else 'Neutral')
+v
+
+import matplotlib.pyplot as plt
+v['label'].value_counts().plot(kind='bar')
