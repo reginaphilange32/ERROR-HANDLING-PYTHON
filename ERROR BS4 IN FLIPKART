@@ -1,0 +1,30 @@
+laptop =[]
+price = []
+processor = []
+ram = []
+
+pages = list(range(1,11))
+
+for page in pages:
+  req = requests.get("https://www.flipkart.com/search?q=laptops&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page={}".format(page)).text
+  soup = BeautifulSoup(req,"html.parser")
+
+  lapy = soup.find_all("div", class_='_4rR01T')
+  for i in range(len(lapy)):
+    laptop.append(lapy[i].text)
+
+  cost = soup.find_all("div",class_="_30jeq3 _1_WHN1")
+  for i in range(len(cost)):
+    price.append(cost[i].text)
+
+  commonclass = soup.find_all('li',class_='rgWa7D')
+  for i in range(len(commonclass)):
+    details = commonclass[i].text
+    if ("Processor" in details):
+      processor.append(details)
+    if ("RAM" in details):
+      ram.append(details)  
+
+
+df = {'laptop':laptop[200],'price':price[200],'processor':processor[slice(200)],'ram':ram[slice(200)]}
+dataset = pd.DataFrame(data=df)
